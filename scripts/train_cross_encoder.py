@@ -103,7 +103,7 @@ def main() -> None:
         per_device_eval_batch_size=args.batch_size,
         learning_rate=args.lr,
         seed=args.seed,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
         metric_for_best_model="macro_f1",
