@@ -11,7 +11,8 @@ import datasets
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-LABEL_MAP = {"SUPPORTS": 0, "REFUTES": 1, "NOT_ENOUGH_INFO": 2}
+# Accepts both string keys (legacy) and integer ClassLabel values from HuggingFace datasets
+LABEL_MAP = {"SUPPORTS": 0, "REFUTES": 1, "NOT_ENOUGH_INFO": 2, "DISPUTED": 2, 0: 0, 1: 1, 2: 2, 3: 2}
 LABEL_NAMES = {0: "SUPPORT", 1: "REFUTE", 2: "NEUTRAL"}
 
 
