@@ -1,0 +1,452 @@
+[
+  {
+    "id": "gs_001",
+    "claim": "We have achieved carbon neutrality across all our operations.",
+    "evidence": "Our Scope 1 and Scope 2 emissions increased by 3% year-over-year, totaling 45 million tonnes of CO2 equivalent in 2023.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "Direct contradiction between neutrality claim and rising emissions data."
+  },
+  {
+    "id": "gs_002",
+    "claim": "Our renewable energy portfolio now powers 100% of our data centers.",
+    "evidence": "We have signed Power Purchase Agreements (PPAs) for renewable energy equivalent to 100% of our global data center electricity consumption.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Amazon Sustainability Report 2023",
+    "annotator_notes": "PPA coverage matches the claim; methodologically sound."
+  },
+  {
+    "id": "gs_003",
+    "claim": "We are committed to achieving net zero emissions by 2050.",
+    "evidence": "The company has announced a long-term ambition to reach net zero greenhouse gas emissions across all operations by 2050, subject to supportive government policy.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "Claim matches announcement, but conditioned on policy—subtle risk."
+  },
+  {
+    "id": "gs_004",
+    "claim": "We reduced our carbon footprint by 50% over the last decade.",
+    "evidence": "Absolute Scope 1 emissions have decreased by 12% since 2013, while production volumes have grown by 35%.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "12% vs claimed 50%; production growth makes intensity reduction misleading."
+  },
+  {
+    "id": "gs_005",
+    "claim": "Our supply chain is 100% deforestation-free.",
+    "evidence": "We are working with suppliers to implement zero-deforestation commitments and have made progress in key commodity supply chains.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "Evidence shows progress/commitment, not verified achievement."
+  },
+  {
+    "id": "gs_006",
+    "claim": "We invest more in clean energy than any other oil company.",
+    "evidence": "Capital expenditure on low-carbon energy solutions represents 15% of total investment, with $4.5 billion allocated in 2023.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "Evidence doesn't confirm comparative claim vs peers."
+  },
+  {
+    "id": "gs_007",
+    "claim": "All our plastic packaging is recyclable or reusable.",
+    "evidence": "We have committed to making 100% of our plastic packaging recyclable, reusable, or compostable by 2025; currently at 78% as of 2023.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Amazon Sustainability Report 2023",
+    "annotator_notes": "Current state (78%) contradicts the absolute claim."
+  },
+  {
+    "id": "gs_008",
+    "claim": "We have eliminated all single-use plastics from our offices.",
+    "evidence": "Single-use plastics have been phased out from all corporate headquarters and major office locations globally as of Q2 2023.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "Evidence directly supports the specific claim about offices."
+  },
+  {
+    "id": "gs_009",
+    "claim": "Our new electric vehicle lineup will eliminate tailpipe emissions.",
+    "evidence": "The ID. series electric vehicles produce zero direct tailpipe CO2 emissions during operation, though lifecycle emissions depend on electricity grid mix.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "Tailpipe claim is technically accurate; lifecycle caveat noted in evidence."
+  },
+  {
+    "id": "gs_010",
+    "claim": "We are carbon negative and remove more CO2 than we emit.",
+    "evidence": "Total Scope 1, 2, and 3 emissions were 55.8 million tonnes CO2e in 2023; carbon removal projects offset 1.2 million tonnes.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "Offsets (1.2Mt) are a fraction of total emissions (55.8Mt); claim is false."
+  },
+  {
+    "id": "gs_011",
+    "claim": "Our operations run entirely on renewable energy.",
+    "evidence": "Renewable energy accounts for approximately 45% of our total energy consumption across global operations.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "45% ≠ entirely; clear quantitative contradiction."
+  },
+  {
+    "id": "gs_012",
+    "claim": "We have planted one million trees to offset our emissions.",
+    "evidence": "As part of our reforestation initiative, we have planted over 1.2 million trees across 15 countries since 2020.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "Number exceeds claim; credible with specifics."
+  },
+  {
+    "id": "gs_013",
+    "claim": "We are reducing emissions faster than any competitor in our sector.",
+    "evidence": "Year-over-year Scope 1 emissions declined by 8%, compared to an industry average decline of 3.2% reported by the IEA.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "Evidence shows above-average performance but doesn't confirm 'any competitor'."
+  },
+  {
+    "id": "gs_014",
+    "claim": "Our products are designed with a zero-waste philosophy.",
+    "evidence": "We have adopted circular design principles, with 83% of our product materials being recyclable at end of life.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "83% recyclable is not zero-waste; partial support."
+  },
+  {
+    "id": "gs_015",
+    "claim": "We have achieved a 30% reduction in water usage.",
+    "evidence": "Water withdrawal intensity (per unit production) decreased by 29.7% compared to our 2018 baseline.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "Rounds to 30%; intensity-based metric matches claim."
+  },
+  {
+    "id": "gs_016",
+    "claim": "All electricity used in our manufacturing is from solar power.",
+    "evidence": "We source renewable electricity for manufacturing through a combination of on-site solar (32%), wind PPAs (41%), and hydro certificates (27%).",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "Only 32% is solar; the rest is other renewables—claim is inaccurate."
+  },
+  {
+    "id": "gs_017",
+    "claim": "We will be fully electric by 2030.",
+    "evidence": "We are targeting 50% of global sales to be fully electric vehicles by 2030, with full electrification of new models by 2035.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "50% sales target vs claim of 'fully electric'; also date mismatch (2035 for full)."
+  },
+  {
+    "id": "gs_018",
+    "claim": "Our packaging uses 100% recycled materials.",
+    "evidence": "Recycled content in our product packaging reached 92% in 2023, up from 78% in 2021.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Amazon Sustainability Report 2023",
+    "annotator_notes": "92% ≠ 100%; ongoing progress but claim is inaccurate."
+  },
+  {
+    "id": "gs_019",
+    "claim": "We offset all business travel emissions through carbon credits.",
+    "evidence": "We purchase verified carbon offsets corresponding to 100% of employee air travel and rental car emissions annually.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "Direct match; offset program specifically covers business travel."
+  },
+  {
+    "id": "gs_020",
+    "claim": "Our new refinery is the most energy-efficient in the world.",
+    "evidence": "The Rotterdam refinery achieved an energy intensity index (EII) of 87.3, ranking in the top quartile of global refinery performance benchmarks.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "Top quartile ≠ most efficient; superlative claim not supported."
+  },
+  {
+    "id": "gs_021",
+    "claim": "We have zero methane emissions from our operations.",
+    "evidence": "Methane intensity (methane emissions per unit of natural gas produced) was 0.04%, down from 0.06% in 2020.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "0.04% intensity is not zero; small but nonzero emissions confirmed."
+  },
+  {
+    "id": "gs_022",
+    "claim": "We are committed to transparent emissions reporting aligned with TCFD.",
+    "evidence": "Our climate disclosures follow the Task Force on Climate-related Financial Disclosures (TCFD) framework, with independent third-party verification of Scope 1 and 2 data.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "TCFD alignment and third-party verification directly support transparency claim."
+  },
+  {
+    "id": "gs_023",
+    "claim": "Our cloud infrastructure is powered by renewable energy.",
+    "evidence": "Amazon Web Services matched 100% of electricity consumption with renewable energy in 2023, making it the world's largest corporate buyer of renewable energy.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Amazon Sustainability Report 2023",
+    "annotator_notes": "100% renewable energy matching for AWS confirmed with superlative detail."
+  },
+  {
+    "id": "gs_024",
+    "claim": "We have eliminated all fossil fuels from our energy mix.",
+    "evidence": "Natural gas continues to supply approximately 18% of our global energy needs, with coal fully phased out by end of 2022.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "Natural gas (fossil fuel) still at 18%; coal phased out but not all fossil fuels."
+  },
+  {
+    "id": "gs_025",
+    "claim": "We are investing $10 billion in green hydrogen by 2030.",
+    "evidence": "Shell has committed to investing up to $10 billion in green hydrogen production and infrastructure between 2023 and 2030.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "Specific investment figure and timeline match exactly."
+  },
+  {
+    "id": "gs_026",
+    "claim": "Our biodiversity programs protect endangered species globally.",
+    "evidence": "We support biodiversity conservation projects in 12 countries, with a focus on habitat restoration in operational areas.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "Habitat restoration doesn't specifically confirm endangered species protection."
+  },
+  {
+    "id": "gs_027",
+    "claim": "We have cut Scope 3 emissions by 40% since 2015.",
+    "evidence": "Scope 3 emissions reporting was initiated in 2020; baseline data prior to 2020 is not available for comparison.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "No 2015 baseline exists; claim of 40% reduction is unverifiable and likely fabricated."
+  },
+  {
+    "id": "gs_028",
+    "claim": "All our tier-1 suppliers meet our environmental standards.",
+    "evidence": "87% of tier-1 suppliers completed our environmental self-assessment questionnaire in 2023; 63% met our minimum standards threshold.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "Only 63% meet standards; 'all' is clearly inaccurate."
+  },
+  {
+    "id": "gs_029",
+    "claim": "Our operations are fully aligned with the Paris Agreement.",
+    "evidence": "We have set science-based targets approved by the SBTi, with a 1.5°C pathway for Scope 1 and 2, and a well-below-2°C pathway for Scope 3.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "Amazon Sustainability Report 2023",
+    "annotator_notes": "SBTi targets support alignment claim but Scope 3 at 2°C (not 1.5°C) weakens it."
+  },
+  {
+    "id": "gs_030",
+    "claim": "We recycle 95% of our operational waste.",
+    "evidence": "In 2023, 94.8% of waste generated across our manufacturing and logistics operations was diverted from landfill through recycling and energy recovery.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "94.8% rounds to 95%; 'diversion' includes energy recovery which covers recycling."
+  },
+  {
+    "id": "gs_031",
+    "claim": "We have achieved ISO 14001 certification across all facilities.",
+    "evidence": "ISO 14001 environmental management certification has been obtained for 89% of our global manufacturing facilities as of December 2023.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "89% ≠ all; non-trivial gap."
+  },
+  {
+    "id": "gs_032",
+    "claim": "Our electric vehicles save customers money on fuel.",
+    "evidence": "Total cost of ownership analysis shows EV drivers save an average of $1,200 annually on fuel and maintenance compared to equivalent ICE vehicles.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "TCO data directly confirms financial savings claim."
+  },
+  {
+    "id": "gs_033",
+    "claim": "We have not increased production of fossil fuels since 2020.",
+    "evidence": "Hydrocarbon production increased from 3.7 million barrels of oil equivalent per day in 2020 to 3.9 million boe/d in 2023.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "Production clearly increased; claim is factually false."
+  },
+  {
+    "id": "gs_034",
+    "claim": "We are the greenest company in the technology sector.",
+    "evidence": "Apple achieved carbon neutrality for corporate operations in 2020 and is on track for full carbon neutrality across its value chain by 2030.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "Strong performance but superlative 'greenest' not supported by comparative data."
+  },
+  {
+    "id": "gs_035",
+    "claim": "We use only sustainably sourced materials in our products.",
+    "evidence": "Sustainably certified materials account for 71% of our total material procurement by volume, with a target of 100% by 2025.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "71% vs 'only' sustainable materials; significant portion still not certified."
+  },
+  {
+    "id": "gs_036",
+    "claim": "We have a net positive impact on biodiversity.",
+    "evidence": "Our biodiversity net gain assessments are in progress for 40% of operational sites; full assessment completion expected by 2025.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "Assessments incomplete; cannot claim net positive without data."
+  },
+  {
+    "id": "gs_037",
+    "claim": "Our carbon offset projects are independently verified.",
+    "evidence": "All carbon offset purchases are sourced from projects verified under the Verified Carbon Standard (VCS) or Gold Standard certification schemes.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Amazon Sustainability Report 2023",
+    "annotator_notes": "VCS and Gold Standard are recognized independent verification schemes."
+  },
+  {
+    "id": "gs_038",
+    "claim": "We will stop all oil exploration by 2025.",
+    "evidence": "New oil and gas exploration licenses were awarded to the company in 2023, including deepwater blocks in the Gulf of Mexico and West Africa.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "New exploration licenses directly contradict the stop-exploration claim."
+  },
+  {
+    "id": "gs_039",
+    "claim": "Our annual sustainability report is audited by a third party.",
+    "evidence": "Deloitte has provided limited assurance on selected environmental and social metrics as disclosed in our 2023 Sustainability Report.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "'Limited assurance' is a form of third-party audit; claim holds with appropriate caveat."
+  },
+  {
+    "id": "gs_040",
+    "claim": "We have transitioned all employee commutes to zero-emission vehicles.",
+    "evidence": "We offer EV charging at 45% of our corporate campuses and provide subsidies for employees purchasing electric vehicles.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "Subsidies/charging ≠ full transition; most employees still use personal non-EV transport."
+  },
+  {
+    "id": "gs_041",
+    "claim": "We are reducing plastic use across our entire value chain.",
+    "evidence": "Total plastic use across our upstream and downstream operations increased by 4% in 2023 due to expanded packaging requirements.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Amazon Sustainability Report 2023",
+    "annotator_notes": "Plastic use increased; claim of reduction is factually contradicted."
+  },
+  {
+    "id": "gs_042",
+    "claim": "We support community renewable energy projects worldwide.",
+    "evidence": "We have funded 23 community solar and wind projects in 8 countries, providing clean energy access to over 50,000 households.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "Specific, verifiable data strongly supports the claim."
+  },
+  {
+    "id": "gs_043",
+    "claim": "Our emissions reduction targets are science-based.",
+    "evidence": "Our greenhouse gas reduction targets have been validated by the Science Based Targets initiative (SBTi) as consistent with a 1.5°C warming scenario.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "SBTi validation is the standard definition of science-based targets."
+  },
+  {
+    "id": "gs_044",
+    "claim": "We have eliminated all coal from our energy supply.",
+    "evidence": "Coal was fully phased out from our energy mix in 2021, replaced by natural gas and renewables across all major facilities.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Amazon Sustainability Report 2023",
+    "annotator_notes": "Full coal phase-out confirmed with year and replacement details."
+  },
+  {
+    "id": "gs_045",
+    "claim": "Our green bonds fund only renewable energy projects.",
+    "evidence": "Proceeds from our $3 billion green bond issuance in 2022 were allocated to renewable energy (68%), energy efficiency (22%), and green buildings (10%).",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "68% to renewables, but 'only' is inaccurate—other green categories also funded."
+  },
+  {
+    "id": "gs_046",
+    "claim": "We have zero waste-to-landfill across all manufacturing sites.",
+    "evidence": "12 of our 47 manufacturing facilities have achieved zero-waste-to-landfill status; the remainder are progressing toward this goal.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Volkswagen Sustainability Report 2023",
+    "annotator_notes": "Only 12/47 sites achieve this; 'all' manufacturing sites is false."
+  },
+  {
+    "id": "gs_047",
+    "claim": "Our reforestation program has restored 500,000 hectares of forest.",
+    "evidence": "Since 2019, our reforestation and afforestation programs have restored or protected 480,000 hectares of forest globally.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "480,000 is close to but not 500,000; minor discrepancy, and 'protected' ≠ 'restored'."
+  },
+  {
+    "id": "gs_048",
+    "claim": "All our logistics partners meet our environmental certification requirements.",
+    "evidence": "We require logistics partners to hold ISO 14001 or equivalent certification; 74% of partners are currently certified.",
+    "label": "REFUTE",
+    "risk_category": "HIGH",
+    "source": "Apple Environmental Report 2023",
+    "annotator_notes": "Requirement exists but only 74% comply; 'all' is demonstrably false."
+  },
+  {
+    "id": "gs_049",
+    "claim": "We are committed to protecting ocean health through pollution reduction.",
+    "evidence": "We have implemented zero-discharge policies for all offshore platforms and participate in the Global Plastic Action Partnership.",
+    "label": "SUPPORT",
+    "risk_category": "LOW",
+    "source": "Shell Climate Report 2023",
+    "annotator_notes": "Zero-discharge policy and GPAP participation support the ocean protection commitment."
+  },
+  {
+    "id": "gs_050",
+    "claim": "Our net zero strategy covers all three emission scopes.",
+    "evidence": "Our net zero pathway includes Scope 1 and Scope 2 targets with verified plans; Scope 3 targets are under development pending improved measurement methodology.",
+    "label": "NEUTRAL",
+    "risk_category": "MODERATE",
+    "source": "ExxonMobil ESG Report 2023",
+    "annotator_notes": "Scope 3 targets still in development; strategy does not yet fully cover all three scopes."
+  }
+]
