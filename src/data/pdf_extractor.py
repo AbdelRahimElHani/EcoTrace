@@ -20,10 +20,13 @@ _NLP = None
 
 
 def _get_nlp() -> spacy.Language:
-    """Lazy-load spaCy model."""
+    """Lazy-load a blank spaCy pipeline with sentencizer (fast, no parser needed)."""
     global _NLP
     if _NLP is None:
-        _NLP = spacy.load("en_core_web_sm")
+        nlp = spacy.blank("en")
+        nlp.add_pipe("sentencizer")
+        nlp.max_length = 10_000_000
+        _NLP = nlp
     return _NLP
 
 
@@ -60,9 +63,7 @@ def sentence_tokenize(text: str) -> List[str]:
         List of sentence strings.
     """
     nlp = _get_nlp()
-    # Disable unused pipeline components for speed
-    with nlp.select_pipes(enable=["senter", "tok2vec"]):
-        doc = nlp(text)
+    doc = nlp(text)
     sentences = [sent.text.strip() for sent in doc.sents if sent.text.strip()]
     logger.info(f"Tokenized into {len(sentences)} sentences")
     return sentences
