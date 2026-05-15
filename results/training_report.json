@@ -1,0 +1,11 @@
+{
+  "model_name": "climatebert/distilroberta-base-climate-f",
+  "epochs": 5,
+  "batch_size": 16,
+  "learning_rate": 2e-05,
+  "max_length": 512,
+  "seed": 42,
+  "train_runtime_s": 29606.02,
+  "train_samples_per_second": 1.04,
+  "final_train_loss": 0.3108
+}
