@@ -19,6 +19,7 @@ ESG_DIR       = "data/esg_reports"
 SENTENCES_DIR = "data/processed/esg_sentences"
 
 _pipeline: EcoTracePipeline | None = None
+_company_retrievers: dict[str, BiEncoderRetriever] = {}   # cache per-company retrievers
 
 
 def get_pipeline() -> EcoTracePipeline:
@@ -31,32 +32,71 @@ def get_pipeline() -> EcoTracePipeline:
     return _pipeline
 
 
-# ── HTML helpers ─────────────────────────────────────────────────────────────
+def get_company_retriever(company: str) -> BiEncoderRetriever:
+    """Return a retriever that searches ONLY within one company's sentences.
+    Built once per company, then cached for speed.
+    """
+    if company not in _company_retrievers:
+        json_path = Path(SENTENCES_DIR) / f"{company}.json"
+        with open(json_path, encoding="utf-8") as f:
+            sentences = json.load(f)["sentences"]
+        retriever = BiEncoderRetriever()
+        retriever.build_index(sentences)
+        _company_retrievers[company] = retriever
+    return _company_retrievers[company]
 
-def _verdict_badge(verdict: str, score: float) -> str:
+
+def indexed_companies() -> list[str]:
+    """Return list of company names that have been indexed."""
+    d = Path(SENTENCES_DIR)
+    if not d.exists():
+        return []
+    return sorted(f.stem for f in d.glob("*.json"))
+
+
+def company_dropdown_choices() -> list[str]:
+    return ["🌍 All Companies (mixed)"] + indexed_companies()
+
+
+# ── HTML helpers ──────────────────────────────────────────────────────────────
+
+def _verdict_badge(verdict: str, score: float, company: str) -> str:
     cfg = {
         "HIGH RISK":     ("#dc2626", "#fee2e2", "🔴"),
         "MODERATE RISK": ("#d97706", "#fef3c7", "🟡"),
         "LOW RISK":      ("#16a34a", "#dcfce7", "🟢"),
     }
     fg, bg, icon = cfg.get(verdict, ("#6b7280", "#f3f4f6", "⚪"))
+    source_note = (
+        f"<div style='font-size:.82rem;color:#64748b;margin-top:8px;'>"
+        f"📄 Evidence source: <b>{company}</b> ESG Report</div>"
+        if company != "All Companies" else
+        f"<div style='font-size:.82rem;color:#f59e0b;margin-top:8px;'>"
+        f"⚠️ Evidence mixed from all indexed companies</div>"
+    )
     return f"""
-    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:12px 0;">
-      <div style="background:{bg};color:{fg};border:2px solid {fg};border-radius:10px;
-                  padding:14px 28px;font-size:1.5rem;font-weight:800;letter-spacing:.05em;">
-        {icon}&nbsp;{verdict}
+    <div style="margin:12px 0;">
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <div style="background:{bg};color:{fg};border:2px solid {fg};border-radius:10px;
+                    padding:14px 28px;font-size:1.5rem;font-weight:800;letter-spacing:.05em;">
+          {icon}&nbsp;{verdict}
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
+                    padding:14px 24px;font-size:1.1rem;color:#334155;">
+          Risk Score:&nbsp;<b style="font-size:1.4rem;">{score:.2f}</b>&nbsp;/ 1.00
+        </div>
       </div>
-      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
-                  padding:14px 24px;font-size:1.1rem;color:#334155;">
-        Risk Score:&nbsp;<b style="font-size:1.4rem;">{score:.2f}</b>&nbsp;/ 1.00
-      </div>
+      {source_note}
     </div>"""
 
 
-def _evidence_cards(retrieved: list) -> str:
+def _evidence_cards(retrieved: list, company: str) -> str:
     if not retrieved:
         return "<p style='color:#94a3b8;font-style:italic;'>No evidence retrieved.</p>"
-    html = "<h4 style='margin:16px 0 10px;color:#334155;'>Retrieved Evidence</h4>"
+    html = (
+        f"<h4 style='margin:16px 0 10px;color:#334155;'>"
+        f"Retrieved Evidence from <span style='color:#0369a1;'>{company}</span></h4>"
+    )
     for item in retrieved:
         pct       = int(item["score"] * 100)
         bar_color = "#22c55e" if pct >= 70 else "#f59e0b" if pct >= 50 else "#94a3b8"
@@ -117,23 +157,21 @@ def _nli_bars(nli_results: list) -> str:
 
 
 def _company_list_html() -> str:
-    d = Path(SENTENCES_DIR)
-    if not d.exists():
+    companies = indexed_companies()
+    if not companies:
         return "<p style='color:#94a3b8'>No companies indexed yet.</p>"
     items = []
-    for f in sorted(d.glob("*.json")):
-        with open(f, encoding="utf-8") as jf:
-            data = json.load(jf)
-        n = len(data.get("sentences", []))
+    for name in companies:
+        json_path = Path(SENTENCES_DIR) / f"{name}.json"
+        with open(json_path, encoding="utf-8") as f:
+            n = len(json.load(f).get("sentences", []))
         items.append(
             f"<li style='margin-bottom:8px;padding:8px 12px;background:#f8fafc;"
             f"border-radius:8px;border:1px solid #e2e8f0;'>"
-            f"<b style='color:#0f172a;'>{f.stem}</b>"
+            f"<b style='color:#0f172a;'>{name}</b>"
             f"<span style='color:#64748b;margin-left:8px;font-size:.88rem;'>"
             f"{n} environmental sentences</span></li>"
         )
-    if not items:
-        return "<p style='color:#94a3b8'>No companies indexed yet.</p>"
     return (
         "<ul style='margin:0;padding:0;list-style:none;'>"
         + "".join(items)
@@ -143,17 +181,38 @@ def _company_list_html() -> str:
 
 # ── Core logic ────────────────────────────────────────────────────────────────
 
-def analyze(claim: str):
+def analyze(claim: str, company_choice: str):
     if not claim.strip():
         err = "<p style='color:#dc2626;font-weight:600;'>⚠️ Please enter a claim.</p>"
         return err, "", ""
 
-    pipe   = get_pipeline()
-    result = pipe.analyze(claim)
+    pipe = get_pipeline()
+
+    # Decide which retriever to use
+    if company_choice and company_choice != "🌍 All Companies (mixed)":
+        company_name = company_choice
+
+        # Check the company is actually indexed
+        json_path = Path(SENTENCES_DIR) / f"{company_name}.json"
+        if not json_path.exists():
+            err = (
+                f"<p style='color:#dc2626;font-weight:600;'>"
+                f"⚠️ {company_name} is not indexed yet. Upload its PDF first.</p>"
+            )
+            return err, "", ""
+
+        # Swap retriever to company-specific one (cached after first use)
+        original_retriever   = pipe.retriever
+        pipe.retriever       = get_company_retriever(company_name)
+        result               = pipe.analyze(claim)
+        pipe.retriever       = original_retriever   # restore full index
+    else:
+        company_name = "All Companies"
+        result = pipe.analyze(claim)
 
     return (
-        _verdict_badge(result["verdict"], result["greenwashing_score"]),
-        _evidence_cards(result["retrieved_evidence"]),
+        _verdict_badge(result["verdict"], result["greenwashing_score"], company_name),
+        _evidence_cards(result["retrieved_evidence"], company_name),
         _nli_bars(result["nli_results"]),
     )
 
@@ -163,6 +222,7 @@ def index_pdf(pdf_file, progress=gr.Progress(track_tqdm=True)):
         return (
             "<p style='color:#d97706;font-weight:600;'>⚠️ No file selected.</p>",
             _company_list_html(),
+            gr.Dropdown(choices=company_dropdown_choices()),
         )
 
     pdf_path = Path(pdf_file.name)
@@ -178,7 +238,7 @@ def index_pdf(pdf_file, progress=gr.Progress(track_tqdm=True)):
     out_json.parent.mkdir(parents=True, exist_ok=True)
     process_esg_report(str(dest), str(out_json))
 
-    progress(0.55, desc="Rebuilding search index (this may take a moment)…")
+    progress(0.55, desc="Rebuilding full search index…")
     all_sentences, seen = [], set()
     for jf in sorted(Path(SENTENCES_DIR).glob("*.json")):
         with open(jf, encoding="utf-8") as f:
@@ -192,9 +252,12 @@ def index_pdf(pdf_file, progress=gr.Progress(track_tqdm=True)):
     retriever.build_index(all_sentences)
     retriever.save_index(INDEX_PATH)
 
-    progress(0.92, desc="Reloading pipeline retriever…")
+    progress(0.88, desc="Reloading pipeline retriever…")
     pipe = get_pipeline()
     pipe.retriever.load_index(INDEX_PATH)
+
+    # Invalidate cached company retriever so it rebuilds next time
+    _company_retrievers.pop(company, None)
 
     with open(out_json, encoding="utf-8") as f:
         n = len(json.load(f).get("sentences", []))
@@ -207,24 +270,24 @@ def index_pdf(pdf_file, progress=gr.Progress(track_tqdm=True)):
         f"<span style='font-weight:400;'>Added <b>{n}</b> environmental sentences. "
         f"Total index: <b>{len(all_sentences)}</b> sentences.</span></div>"
     )
-    return status, _company_list_html()
+    return status, _company_list_html(), gr.Dropdown(choices=company_dropdown_choices())
 
 
 # ── UI layout ─────────────────────────────────────────────────────────────────
 
 EXAMPLES = [
-    "We have achieved carbon neutrality across all our operations.",
-    "Our packaging uses 100% recycled materials.",
-    "We will be fully electric by 2030.",
-    "We have zero methane emissions from our operations.",
-    "We invest more in clean energy than any other oil company.",
-    "Our supply chain is 100% deforestation-free.",
-    "We recycle 95% of our operational waste.",
-    "All our tier-1 suppliers meet our environmental standards.",
+    ["We have achieved carbon neutrality across all our operations.",        "ExxonMobile"],
+    ["Our packaging uses 100% recycled materials.",                          "Amazon"],
+    ["We will be fully electric by 2030.",                                   "Volkswagen"],
+    ["We have zero methane emissions from our operations.",                  "ExxonMobile"],
+    ["Our cloud infrastructure is powered by renewable energy.",             "Amazon"],
+    ["We invest more in clean energy than any other oil company.",           "Shell"],
+    ["Our emissions reduction targets are science-based.",                   "Apple"],
+    ["All our tier-1 suppliers meet our environmental standards.",           "Apple"],
 ]
 
 CSS = """
-#header  { text-align:center; padding:24px 0 8px; }
+#header { text-align:center; padding:24px 0 8px; }
 #header h1 { font-size:2.4rem; font-weight:900; color:#0f172a; margin:0; }
 #header p  { color:#64748b; font-size:1.05rem; margin:6px 0 0; }
 footer { display:none !important; }
@@ -237,7 +300,8 @@ def build_ui() -> gr.Blocks:
         gr.HTML("""
         <div id="header">
           <h1>🌿 EcoTrace</h1>
-          <p>Automated Greenwashing Detection — ClimateBERT NLI · Dense Retrieval · Risk Scoring</p>
+          <p>Automated Greenwashing Detection — each claim is checked against
+             the <b>same company's own report</b></p>
         </div>
         """)
 
@@ -245,17 +309,33 @@ def build_ui() -> gr.Blocks:
 
             # ── Tab 1: Analyze ────────────────────────────────────────────
             with gr.Tab("🔍  Analyze a Claim"):
-                with gr.Row(equal_height=False):
 
+                gr.Markdown(
+                    "**How it works:** Select the company whose report you want to "
+                    "fact-check, then type or paste a claim from that report. "
+                    "EcoTrace will search *only within that company's own data* "
+                    "to verify the claim."
+                )
+
+                with gr.Row(equal_height=False):
                     with gr.Column(scale=2):
+
+                        company_dd = gr.Dropdown(
+                            choices=company_dropdown_choices(),
+                            value=indexed_companies()[0] if indexed_companies() else None,
+                            label="📂 Select Company Report",
+                            info="Pick the company the claim comes from",
+                        )
+
                         claim_box = gr.Textbox(
                             label="Corporate ESG Claim",
                             placeholder=(
-                                'Paste or type any environmental claim, e.g.\n'
+                                'Paste a claim from that company\'s ESG report, e.g.\n'
                                 '"We have achieved carbon neutrality across all our operations."'
                             ),
                             lines=4,
                         )
+
                         with gr.Row():
                             analyze_btn = gr.Button(
                                 "⚡ Analyze", variant="primary", scale=3
@@ -265,9 +345,9 @@ def build_ui() -> gr.Blocks:
                             )
 
                         gr.Examples(
-                            examples=[[e] for e in EXAMPLES],
-                            inputs=[claim_box],
-                            label="Quick examples — click any to load",
+                            examples=EXAMPLES,
+                            inputs=[claim_box, company_dd],
+                            label="Quick examples — each one is matched to the correct company",
                             examples_per_page=8,
                         )
 
@@ -278,7 +358,7 @@ def build_ui() -> gr.Blocks:
 
                 analyze_btn.click(
                     fn=analyze,
-                    inputs=[claim_box],
+                    inputs=[claim_box, company_dd],
                     outputs=[verdict_out, evidence_out, nli_out],
                 )
                 clear_btn.click(
@@ -290,10 +370,13 @@ def build_ui() -> gr.Blocks:
             with gr.Tab("📄  Add a Company PDF"):
                 gr.Markdown("""
 Upload any company's ESG or sustainability report PDF.
-EcoTrace will extract environmental sentences from it, embed them into the search index,
-and make them available immediately for claim analysis.
+EcoTrace will:
+1. Extract all text from the PDF
+2. Split it into sentences and keep only environmental ones
+3. Embed those sentences into the search index
+4. Make that company available in the **Select Company** dropdown immediately
 
-**Supported companies so far:** Amazon · Apple · ExxonMobil · Shell · Volkswagen
+**Once indexed, claims are only checked against that company's own data — no cross-company mixing.**
                 """)
 
                 with gr.Row(equal_height=False):
@@ -305,7 +388,7 @@ and make them available immediately for claim analysis.
                         )
                         index_btn = gr.Button("📥 Index PDF", variant="primary")
                         gr.Markdown(
-                            "_Indexing typically takes 30–90 seconds depending on PDF size._",
+                            "_Indexing takes 30–90 seconds depending on PDF size._"
                         )
                         index_status = gr.HTML()
 
@@ -316,7 +399,7 @@ and make them available immediately for claim analysis.
                 index_btn.click(
                     fn=index_pdf,
                     inputs=[pdf_input],
-                    outputs=[index_status, company_list_out],
+                    outputs=[index_status, company_list_out, company_dd],
                 )
 
     return demo
