@@ -51,12 +51,20 @@ class GreenwashingExplainer:
         if provider == "openai":
             import openai
 
-            return openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+            api_key = os.environ.get("OPENAI_API_KEY")
+            if not api_key:
+                logger.warning("OPENAI_API_KEY not set — LLM explanations disabled.")
+                return None
+            return openai.OpenAI(api_key=api_key)
 
         if provider == "anthropic":
             import anthropic
 
-            return anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+            api_key = os.environ.get("ANTHROPIC_API_KEY")
+            if not api_key:
+                logger.warning("ANTHROPIC_API_KEY not set — LLM explanations disabled.")
+                return None
+            return anthropic.Anthropic(api_key=api_key)
 
         if provider == "local":
             return None  # Ollama uses requests directly
@@ -90,6 +98,9 @@ class GreenwashingExplainer:
             f"VERDICT: {verdict}\n"
             f"RISK SCORE: {score:.2f}"
         )
+
+        if self._client is None and self.provider != "local":
+            return "Explanation unavailable (no API key configured)."
 
         if self.provider == "openai":
             return self._call_openai(user_message)
